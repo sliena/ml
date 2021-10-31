@@ -4,12 +4,20 @@ import matplotlib.pyplot as plt
 # plt.axis([0, 10, 0, 10])
 # plt.show()
 
-val = [2.6810836,2.650537003]
-zal = 1
-val.append(zal)
-print(val)
+# val = [2.6810836,2.650537003]
+# zal = 1
+# val.append(zal)
+# print(val)
 
-lst = [10.2,20.2] 
-x = 0
-lst.append(x) 
-print(lst) 
+# lst = [10.2,20.2] 
+# x = 0
+# lst.append(x) 
+# print(lst) 
+
+
+import random
+
+#x = random.random()
+# Random float number
+for i in range(20):
+    print(random.uniform(0, 5), random.uniform(0, 5))
