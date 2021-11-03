@@ -20,4 +20,12 @@ import random
 #x = random.random()
 # Random float number
 for i in range(20):
-    print(random.uniform(0, 5), random.uniform(0, 5))
+    print('[%f, %f, %d],' % (random.uniform(0.5, 5), random.uniform(0.5, 5), 0))
+
+# def fed():
+#     val1 = list([1, 2, 3])
+#     val2 = list([4, 5, 6])
+#     return val1, val2
+
+# val = fed()
+# print(type(val))
