@@ -142,6 +142,20 @@ plt.axis([0, 5, 0, 5])
 plot3 = plt.figure(3)
 for c in centroids_2:
     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+for r in datapoints_2:
+    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+plt.axis([0, 5, 0, 5])
+
+plot4 = plt.figure(4)
+for c in centroids_2:
+    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+for r in datapoints_3:
+    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+plt.axis([0, 5, 0, 5])
+
+plot5 = plt.figure(5)
+for c in centroids_3:
+    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
 for r in datapoints_3:
     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
 plt.axis([0, 5, 0, 5])
