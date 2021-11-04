@@ -116,16 +116,6 @@ colors = {
 
 final = rename_me(datapoints_1, centroids_1)
 
-# plot1 = plt.figure(1)
-# for c in centroids_1:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_1:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-
-
-
 #print(centroids_1)
 datapoints_2 = assign_centroid(datapoints_1, centroids_1)
 centroids_2 = update_centroids(datapoints_2, centroids_1)[0]
@@ -178,47 +168,3 @@ for r in final[0]:
 plt.axis([0, 5, 0, 5])
 
 plt.show()
-
-# plot2 = plt.figure(2)
-# for c in val1[1]:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-
-# for r in val1[0]:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-
-# plt.axis([0, 5, 0, 5])
-
-# plot3 = plt.figure(3)
-# for c in val2[1]:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-
-# for r in val2[0]:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-
-# plt.axis([0, 5, 0, 5])
-
-
-
-# for c in cents_2:
-#     print(c)
-
-# plot1 = plt.figure(1)
-# for c in centroids_init:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-
-# for r in datapoints_2:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-
-# plt.axis([0, 5, 0, 5])
-
-# plot2 = plt.figure(2)
-# for c in cents_2:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-
-# for r in datapoints_2:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-
-# plt.axis([0, 5, 0, 5])
-# plt.show()
-
-
