@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 # print(lst) 
 
 
-import random
+# import random
 
-#x = random.random()
-# Random float number
-for i in range(20):
-    print('[%f, %f, %d],' % (random.uniform(0.5, 5), random.uniform(0.5, 5), 0))
+# #x = random.random()
+# # Random float number
+# for i in range(20):
+#     print('[%f, %f, %d],' % (random.uniform(0.5, 5), random.uniform(0.5, 5), 0))
 
 # def fed():
 #     val1 = list([1, 2, 3])
@@ -29,3 +29,15 @@ for i in range(20):
 
 # val = fed()
 # print(type(val))
+
+import requests
+
+response = requests.get("https://api.opendota.com/api/heroes")
+
+#print(response.text)
+
+file1 = open("C:/Users/zebra/Desktop/dota_heroes.txt","a")#append mode
+file1.write(response.text)
+file1.close()
+
+

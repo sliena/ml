@@ -4,6 +4,7 @@
 #4.move each centroid to its new center position
 #5.repeat 1-4 until nothing changes after 1 iteration
 
+from os import rename
 import matplotlib.pyplot as plt
 import copy
 
@@ -24,7 +25,7 @@ def assign_centroid(datapoints, centroids):
         dp[2] = tmp[1]
     return res
 
-def update_centroids(datapoints, centroids):
+def center_single_centroid(datapoints, centroids):
     res = list()
     changed = False
     for c in centroids:
@@ -46,17 +47,36 @@ def update_centroids(datapoints, centroids):
             res.append(c)
     return res, changed
 
-def rename_me(datapoints, centroids):
+def center_all_centroids(datapoints, centroids):
     changed = True
     tmp_dp = datapoints
     tmp_cents = centroids
-    print(tmp_cents)
     while (changed):
         tmp_dp = assign_centroid(tmp_dp, tmp_cents)
-        tmp = update_centroids(tmp_dp, tmp_cents)
+        tmp = center_single_centroid(tmp_dp, tmp_cents)
         tmp_cents = tmp[0]
         changed = tmp[1]
     return tmp_dp, tmp_cents
+
+def place_clusters(datapoints, k):
+    clusters = list()
+    first_cluster = [datapoints[0][0], datapoints[0][1], 0]
+    clusters.append(first_cluster)
+    clusters = center_all_centroids(datapoints, clusters)[1]
+    for n in range(k-1):
+        max_dist = 0
+        max_dp = [0, 0, 0]
+        for dp in datapoints:
+            dist = 0
+            for c in clusters:
+                dist += euclidean_distance(dp, c) ** 2
+                if (dist > max_dist):
+                    max_dist = dist
+                    max_dp = [dp[0], dp[1], n+1]
+        clusters.append(max_dp)
+    return center_all_centroids(datapoints, clusters)
+
+
 
 centroids_1 = [[2.7810836,2.550537003,1],
 	[1.465489372,2.362125076,2],
@@ -114,57 +134,71 @@ colors = {
   "5": "m"
 }
 
-final = rename_me(datapoints_1, centroids_1)
-
-#print(centroids_1)
-datapoints_2 = assign_centroid(datapoints_1, centroids_1)
-centroids_2 = update_centroids(datapoints_2, centroids_1)[0]
-#print(centroids_2)
-datapoints_3 = assign_centroid(datapoints_2, centroids_2)
-centroids_3 = update_centroids(datapoints_3, centroids_2)[0]
-#print(centroids_3)
-#datapoints_3 = assign_centroid()
+res = place_clusters(datapoints_1, 6)
 
 plot1 = plt.figure(1)
-for c in centroids_1:
+for c in res[1]:
     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in datapoints_1:
+for r in res[0]:
     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
 plt.axis([0, 5, 0, 5])
-
-plot2 = plt.figure(2)
-for c in centroids_1:
-    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in datapoints_2:
-    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
-
-plot3 = plt.figure(3)
-for c in centroids_2:
-    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in datapoints_2:
-    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
-
-plot4 = plt.figure(4)
-for c in centroids_2:
-    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in datapoints_3:
-    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
-
-plot5 = plt.figure(5)
-for c in centroids_3:
-    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in datapoints_3:
-    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
-
-plot6 = plt.figure(6)
-for c in final[1]:
-    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in final[0]:
-    plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
-
 plt.show()
+
+
+
+
+
+# final = rename_me(datapoints_1, centroids_1)
+
+# #print(centroids_1)
+# datapoints_2 = assign_centroid(datapoints_1, centroids_1)
+# centroids_2 = update_centroids(datapoints_2, centroids_1)[0]
+# #print(centroids_2)
+# datapoints_3 = assign_centroid(datapoints_2, centroids_2)
+# centroids_3 = update_centroids(datapoints_3, centroids_2)[0]
+# #print(centroids_3)
+# #datapoints_3 = assign_centroid()
+
+# plot1 = plt.figure(1)
+# for c in centroids_1:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints_1:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plot2 = plt.figure(2)
+# for c in centroids_1:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints_2:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plot3 = plt.figure(3)
+# for c in centroids_2:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints_2:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plot4 = plt.figure(4)
+# for c in centroids_2:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints_3:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plot5 = plt.figure(5)
+# for c in centroids_3:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints_3:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plot6 = plt.figure(6)
+# for c in final[1]:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in final[0]:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
+# plt.show()
