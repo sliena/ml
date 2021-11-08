@@ -74,7 +74,19 @@ def place_clusters(datapoints, k):
                     max_dist = dist
                     max_dp = [dp[0], dp[1], n+1]
         clusters.append(max_dp)
-    return center_all_centroids(datapoints, clusters)
+        tmp_datapoints, clusters = center_all_centroids(datapoints, clusters)
+        elbow(tmp_datapoints, clusters)
+    return center_all_centroids(datapoints, clusters)    
+
+def elbow(datapoints, centroids):
+    WCSS = 0
+    for c in centroids:
+        for dp in datapoints:       
+            if (dp[2] == c[2]):
+                WCSS += euclidean_distance(dp, c) ** 2
+    prnt = WCSS / len(centroids)
+    print(prnt)
+    return prnt
 
 
 
@@ -125,16 +137,20 @@ datapoints_1 = [[3.02494593464871464, 3.36048495624975974, 0],
 [1.476733, 4.550113, 0],
 [4.291687, 1.058274, 0]]
 
+dt_test = [[1,1,0],[1,2.5,0],[1,4,0],[4,1,0],[4,2.5,0],[4,4,0]]
+
 colors = {
   "0": "k",
   "1": "b",
   "2": "g",
   "3": "r",
   "4": "c",
-  "5": "m"
+  "5": "m",
+  "6": "y",
+  "7": "m"
 }
 
-res = place_clusters(datapoints_1, 6)
+res = place_clusters(datapoints_1, 8)
 
 plot1 = plt.figure(1)
 for c in res[1]:
@@ -142,7 +158,17 @@ for c in res[1]:
 for r in res[0]:
     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
 plt.axis([0, 5, 0, 5])
+
+# plot2 = plt.figure(2)
+# for c in res2[1]:
+#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in res2[0]:
+#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
+# plt.axis([0, 5, 0, 5])
+
 plt.show()
+
+#print(elbow(datapoints_1, centroids_1))
 
 
 
