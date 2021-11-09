@@ -4,20 +4,31 @@
 #4.move each centroid to its new center position
 #5.repeat 1-4 until nothing changes after 1 iteration
 
-from os import rename
 import matplotlib.pyplot as plt
 import copy
+import csv
 
+# Read CSV file and convert to a list
+def csv_to_array(path):
+    res = []
+    with open (path) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
+        for row in csv_reader:
+            res.append(row)
+    return res
+
+# Calculate euclidean distance between single datapoint and centroid
 def euclidean_distance(datapoint, centroid):
     sum = float()
     for i in range(len(datapoint) - 1):
         sum += (datapoint[i] - centroid[i]) ** 2
     return sum ** 0.5
 
+# Assign each datapoint a centroid it belongs to
 def assign_centroid(datapoints, centroids):
     res = copy.deepcopy(datapoints)
     for dp in res:
-        tmp = (10,0)
+        tmp = (euclidean_distance(dp, centroids[0]),0)
         for c in centroids:
             dist = euclidean_distance(dp, c)
             if (dist < tmp[0]):
@@ -25,6 +36,7 @@ def assign_centroid(datapoints, centroids):
         dp[2] = tmp[1]
     return res
 
+# Center single centroid among its belonging datapoints
 def center_single_centroid(datapoints, centroids):
     res = list()
     changed = False
@@ -47,6 +59,7 @@ def center_single_centroid(datapoints, centroids):
             res.append(c)
     return res, changed
 
+# Center all centroids among their belonging datapoints
 def center_all_centroids(datapoints, centroids):
     changed = True
     tmp_dp = datapoints
@@ -58,12 +71,17 @@ def center_all_centroids(datapoints, centroids):
         changed = tmp[1]
     return tmp_dp, tmp_cents
 
-def place_clusters(datapoints, k):
+# Determine optimal amount of centroids for set of datapoints and spread them evenly
+def k_means(datapoints):
     clusters = list()
     first_cluster = [datapoints[0][0], datapoints[0][1], 0]
     clusters.append(first_cluster)
     clusters = center_all_centroids(datapoints, clusters)[1]
-    for n in range(k-1):
+    wcss_1 = 0
+    wcss_2 = wcss(datapoints, clusters)
+    diff = wcss_2
+    while (diff > 5):
+        print(diff)
         max_dist = 0
         max_dp = [0, 0, 0]
         for dp in datapoints:
@@ -72,70 +90,23 @@ def place_clusters(datapoints, k):
                 dist += euclidean_distance(dp, c) ** 2
                 if (dist > max_dist):
                     max_dist = dist
-                    max_dp = [dp[0], dp[1], n+1]
+                    max_dp = [dp[0], dp[1], len(clusters)]
         clusters.append(max_dp)
         tmp_datapoints, clusters = center_all_centroids(datapoints, clusters)
-        elbow(tmp_datapoints, clusters)
+        wcss_1 = wcss_2
+        wcss_2 = wcss(tmp_datapoints, clusters)
+        diff = wcss_1 - wcss_2
     return center_all_centroids(datapoints, clusters)    
 
-def elbow(datapoints, centroids):
-    WCSS = 0
+# 
+def wcss(datapoints, centroids):
+    sum = 0
     for c in centroids:
         for dp in datapoints:       
             if (dp[2] == c[2]):
-                WCSS += euclidean_distance(dp, c) ** 2
-    prnt = WCSS / len(centroids)
-    print(prnt)
-    return prnt
+                sum += euclidean_distance(dp, c) ** 2
+    return sum / len(centroids)
 
-
-
-centroids_1 = [[2.7810836,2.550537003,1],
-	[1.465489372,2.362125076,2],
-	[3.396561688,4.400293529,3],
-	[1.38807019,1.850220317,4],
-	[3.06407232,3.005305973,5]]
-
-datapoints_1 = [[3.02494593464871464, 3.36048495624975974, 0],
-[2.0163211699988564, 1.4698537144501256, 0],
-[1.78071813426441, 2.068853445457007, 0],
-[3.029593796670162043, 1.9992747098798942, 0],
-[4.3897359190529581, 4.545941882302538, 0],
-[2.612878323133237, 1.8390421591925783, 0],
-[4.555115697992543, 4.134906308630807, 0],
-[2.9895602798236824, 3.2162634169444932, 0],
-[4.718696911531623, 1.6740919925674902, 0],
-[4.41430499403088, 3.204726684091125, 0],
-[2.8327339953334384, 3.1717677675694382, 0],
-[4.906932101399594, 3.722640968164732, 0],
-[1.639896807053927, 2.6959689197732786, 0],
-[3.6139272327822387, 4.478393615267237, 0],
-[1.3700244534400188, 1.5663715819839632, 0],
-[1.0606531900240008, 4.12836799232493423, 0],
-[2.833286839710485, 3.292745731283498, 0],
-[1.0555707095074007, 2.5022250437227477, 0],
-[3.2630202214004806, 1.4110014368848722, 0],
-[3.2069388575396642, 3.6457714528467715, 0],
-[3.906137, 3.361724, 0],
-[4.115977, 3.382294, 0],
-[4.508293, 1.871085, 0],
-[4.940708, 2.877789, 0],
-[1.814244, 3.426315, 0],
-[4.760862, 3.052155, 0],
-[3.042034, 2.128135, 0],
-[2.315427, 3.402209, 0],
-[1.932761, 0.883623, 0],
-[3.191374, 0.642309, 0],
-[0.686096, 2.874091, 0],
-[4.799137, 1.640946, 0],
-[2.769040, 3.132980, 0],
-[1.329190, 3.980595, 0],
-[2.774409, 1.811267, 0],
-[2.862281, 3.220915, 0],
-[2.827836, 1.914425, 0],
-[1.386679, 1.378423, 0],
-[1.476733, 4.550113, 0],
-[4.291687, 1.058274, 0]]
 
 dt_test = [[1,1,0],[1,2.5,0],[1,4,0],[4,1,0],[4,2.5,0],[4,4,0]]
 
@@ -146,85 +117,17 @@ colors = {
   "3": "r",
   "4": "c",
   "5": "m",
-  "6": "y",
-  "7": "m"
+  "6": "y"
 }
 
-res = place_clusters(datapoints_1, 8)
+datapoints = csv_to_array('datapoints.csv')
+final = k_means(datapoints)
 
 plot1 = plt.figure(1)
-for c in res[1]:
+for c in final[1]:
     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in res[0]:
+for r in final[0]:
     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
 plt.axis([0, 5, 0, 5])
 
-# plot2 = plt.figure(2)
-# for c in res2[1]:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in res2[0]:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
 plt.show()
-
-#print(elbow(datapoints_1, centroids_1))
-
-
-
-
-
-# final = rename_me(datapoints_1, centroids_1)
-
-# #print(centroids_1)
-# datapoints_2 = assign_centroid(datapoints_1, centroids_1)
-# centroids_2 = update_centroids(datapoints_2, centroids_1)[0]
-# #print(centroids_2)
-# datapoints_3 = assign_centroid(datapoints_2, centroids_2)
-# centroids_3 = update_centroids(datapoints_3, centroids_2)[0]
-# #print(centroids_3)
-# #datapoints_3 = assign_centroid()
-
-# plot1 = plt.figure(1)
-# for c in centroids_1:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_1:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plot2 = plt.figure(2)
-# for c in centroids_1:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_2:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plot3 = plt.figure(3)
-# for c in centroids_2:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_2:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plot4 = plt.figure(4)
-# for c in centroids_2:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_3:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plot5 = plt.figure(5)
-# for c in centroids_3:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in datapoints_3:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plot6 = plt.figure(6)
-# for c in final[1]:
-#     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-# for r in final[0]:
-#     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-# plt.axis([0, 5, 0, 5])
-
-# plt.show()
