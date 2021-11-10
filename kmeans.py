@@ -80,8 +80,9 @@ def k_means(datapoints):
     wcss_1 = 0
     wcss_2 = wcss(datapoints, clusters)
     diff = wcss_2
-    while (diff > 5):
-        print(diff)
+    print('WCSS_1: %f WCSS_2 %f DIFF: %f' % (wcss_1, wcss_2, diff))
+    #while (diff > 5):
+    for i in range(5):  
         max_dist = 0
         max_dp = [0, 0, 0]
         for dp in datapoints:
@@ -96,6 +97,7 @@ def k_means(datapoints):
         wcss_1 = wcss_2
         wcss_2 = wcss(tmp_datapoints, clusters)
         diff = wcss_1 - wcss_2
+        print('WCSS_1: %d WCSS_2 %d DIFF: %d' % (wcss_1, wcss_2, diff))
     return center_all_centroids(datapoints, clusters)    
 
 # 
@@ -120,14 +122,30 @@ colors = {
   "6": "y"
 }
 
-datapoints = csv_to_array('datapoints.csv')
-final = k_means(datapoints)
+datapoints = csv_to_array('test.csv')
+my_iris = k_means(datapoints)
+
+#datapoints2 = csv_to_array('iris_plot.csv')
+#real_iris = k_means(datapoints2)
+#print(datapoints2[0])
+
+# f = open('new_iris.csv', 'w')
+# writer = csv.writer(f)
+# writer.writerow(final)
+# f.close()
 
 plot1 = plt.figure(1)
-for c in final[1]:
+for c in my_iris[1]:
     plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
-for r in final[0]:
+for r in my_iris[0]:
     plt.plot(r[0], r[1], f'{colors[f"{r[2]}"]}.')
-plt.axis([0, 5, 0, 5])
+plt.axis([0, 10, 0, 10])
+
+# plot2 = plt.figure(2)
+# #for c in datapoints2[1]:
+# #    plt.plot(c[0], c[1], f'{colors[f"{c[2]}"]}o')
+# for r in datapoints2:
+#     plt.plot(r[0], r[1], f'{colors[f"{int(r[2])}"]}.')
+# plt.axis([0, 10, 0, 10])
 
 plt.show()
